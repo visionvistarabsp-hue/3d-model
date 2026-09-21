@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+build/
+
+# environment / secrets
+.env
+.env.local
+.env*.local
+
+# blender
+blender/*.blend1
+blender/**/*.blend1
+blender/**/__pycache__/
+**/__pycache__/
+**/*.pyc
+
+# large / generated 3d artifacts (keep exports small; dev re-exports locally)
+public/assets/models/*.glb
+public/assets/textures/
+*.glb.tmp
+
+# testing
+coverage/
+playwright-report/
+test-results/
+
+# misc
+.DS_Store
+*.log
+*.tsbuildinfo
+next-env.d.ts

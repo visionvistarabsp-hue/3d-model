@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0b0d12;
+  color: #e8edf5;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  overflow: hidden; /* the 3D canvas owns the viewport; panels float above */
+}
+
+#__next {
+  height: 100%;
+}
+
+.demo-banner {
+  background:
+    linear-gradient(90deg, rgba(250, 204, 21, 0.16), rgba(250, 204, 21, 0.04)),
+    rgba(20, 20, 28, 0.82);
+  border-bottom: 1px solid rgba(250, 204, 21, 0.35);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1a1d26 25%, #242836 50%, #1a1d26 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s infinite linear;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes hull-rotate {
+  from {
+    transform: rotateX(60deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(60deg) rotateZ(360deg);
+  }
+}
+
+.hull-spinner {
+  animation: hull-rotate 1.4s linear infinite;
+}
