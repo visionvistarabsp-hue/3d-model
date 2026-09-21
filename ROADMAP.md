@@ -7,19 +7,21 @@
 - Fixed Cloudflare, GitHub and OpenCV MCP connectivity.
 - Architecture assessment + template docs.
 
-## Phase 1 — Scaffold  🔄
+## Phase 1 — Scaffold  ✅
 - [x] Git baseline, package config (Next 15, React 19, R3F 9, drei, zustand, zod, Tailwind 4).
 - [x] Canonical types + zod schemas (shop / floor / model / view-mode).
 - [x] StorageClient + ShopRepository (mock) + demo data (marked DEMO).
-- [x] Base viewer (Canvas, lights, camera, error boundary, loading, placeholder mall).
+- [x] Base viewer (Canvas, lights, error boundary, loading, placeholder mall).
 - [x] Docs skeleton, ROADMAP, AGENTS.
-- [ ] `npm run typecheck` + `npm run build` green, first commit.
-- [ ] Dev-server smoke test in a browser.
+- [x] `npm run typecheck` + `npm run build` green, first commit.
+- [x] Dev-server smoke test in a browser.
 
-## Phase 2 — Blender demo mall + GLB  ⏳
-- `blender/scripts/build_demo_mall.py` (rule-based slab/shop/structure geometry).
-- GLB export → `public/assets/models/demo-mall.glb`, manifest update.
-- Enable GLB path; verify shop id mapping on load.
+## Phase 2 — Blender demo mall + GLB  ✅
+- [x] `blender/scripts/build_demo_mall.py` (rule-based slab/shop/structure geometry).
+- [x] GLB export → `public/assets/models/demo-mall.glb`, manifest update.
+- [x] Enable GLB path; verify shop id mapping on load.
+- [x] 25 shop meshes + 13 unit tests; typecheck/lint/build all green; committed.
+
 
 ## Phase 3 — Interaction core  ⏳
 - Orbit camera polish, floor selector (G/F1/F2).
