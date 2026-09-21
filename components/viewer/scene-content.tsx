@@ -3,17 +3,32 @@
 /**
  * Owns the decision of WHAT to render inside the viewport.
  *
- *   - PHASE 1 (current): the GLB does not exist yet, so we render the
- *     procedural PlaceholderMall built from the SAME shop ids + floor data.
- *     Selection/hover wiring therefore already works end-to-end today.
- *   - PHASE 2: enable the GLB path below once `public/assets/models/demo-mall.glb`
- *     is exported by the Blender pipeline.
+ *          DEMO GEOMETRY IS NEVER THE SOURCE OF TRUTH FOR BUSINESS DATA.
+ * The GLB only maps mesh -> shopId. All commercial facts come from the
+ * ShopRepository (see AGENTS rules 2/3). Swap data without touching selection.
+ *
+ * Renders the exported demo mall GLB (manifest via loadModelManifest). The
+ * ModelErrorBoundary falls back to the procedural PlaceholderMall if the GLB
+ * fails to load, so the scaffold never breaks.
  */
-import { PlaceholderMall } from "./placeholder-mall";
+import { useEffect, useState } from "react";
+import { loadModelManifest } from "@/lib/model/model-loader";
+import type { LoadableModel } from "@/lib/model/model-loader";
+import { MallModel } from "./mall-model";
 
 export function SceneContent() {
-  // PHASE 2 — swap the return below for <MallModel> when the GLB exists:
-  //   const { source } = await import("@/lib/model/model-loader");
-  //   return <MallModel manifest={manifest} />;
-  return <PlaceholderMall />;
+  const [model, setModel] = useState<LoadableModel | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    loadModelManifest("demo").then((m) => {
+      if (alive) setModel(m);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  if (!model) return null;
+  return <MallModel manifest={model} />;
 }

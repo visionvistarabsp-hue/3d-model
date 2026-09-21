@@ -10,7 +10,7 @@ export const DEMO_MODEL_MANIFEST: ModelMetadata = {
   isDemo: true,
   modelId: "mall-demo-001",
   label: "Demo Mall (procedural prototype)",
-  version: "0.2.0",
+  version: "0.3.0",
   units: "meters",
   layout: "single",
   glbKey: "models/demo-mall.glb",
@@ -20,10 +20,10 @@ export const DEMO_MODEL_MANIFEST: ModelMetadata = {
     { floorId: "F2", glbKey: "models/demo-mall.glb" }
   ],
   objectNaming: "SHOP_<FLOOR>_<SEQ> | MALL_/COMMON_/SITE_* structure",
-  objectCount: 0, // filled at export time
-  exportedAt: "1970-01-01T00:00:00.000Z", // placeholder until PHASE 2 export
+  objectCount: 25, // 20 shops + 3 slabs + roof + site ground (matches export)
+  exportedAt: "2026-09-21T07:50:22.204Z",
   toolchain: {
     blenderVersion: "5.2.1",
-    scriptVersion: "0.2.0"
+    scriptVersion: "0.3.0"
   }
 };
