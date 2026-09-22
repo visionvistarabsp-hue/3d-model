@@ -43,6 +43,22 @@ export function shopIdFromUserData(userData: Record<string, unknown> | undefined
   return null;
 }
 
+/**
+ * Resolve a shop id from a GLB object, preferring its userData.shopId and
+ * falling back to its node name. Shops export as multiple parts (e.g.
+ * `SHOP_G_001_GLASS`) whose names do not match the canonical pattern, but
+ * every part carries userData.shopId. Never throws.
+ */
+export function shopIdFromObject(source: {
+  name?: string;
+  userData?: Record<string, unknown>;
+}): string | null {
+  const fromData = shopIdFromUserData(source.userData);
+  if (fromData) return parseShopObjectName(fromData)?.shopId ?? null;
+  if (!source.name) return null;
+  return parseShopObjectName(source.name)?.shopId ?? null;
+}
+
 /** Build the canonical object name for a floor + sequence. */
 export function shopObjectName(floorId: string, seq: number): string {
   return `SHOP_${floorId.toUpperCase()}_${String(seq).padStart(3, "0")}`;

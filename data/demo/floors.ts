@@ -7,7 +7,7 @@
  * the validated layout and re-run the Blender pipeline.
  *
  * Floor heights and base elevations must stay in sync with the demo Blender
- * build (blender/scripts/build_demo_mall.py).
+ * build (blender/scripts/generate_mall.py).
  */
 import type { Building, Floor } from "@/types";
 
@@ -55,5 +55,5 @@ export const DEMO_BUILDING: Building = {
   id: "MALL_DEMO_001",
   name: "Demo Mall (procedural)",
   floors: demoFloors(),
-  shopCount: 0 // filled by generator in shops.ts
+  shopCount: 27 // 9 shops x 3 floors (matches shops.ts + GLB export)
 };

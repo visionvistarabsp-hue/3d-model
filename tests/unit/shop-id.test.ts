@@ -3,6 +3,7 @@ import {
   parseShopObjectName,
   shopObjectName,
   shopIdFromUserData,
+  shopIdFromObject,
   isStructureObjectName
 } from "@/lib/select/shop-id";
 
@@ -53,6 +54,31 @@ describe("shopIdFromUserData", () => {
     expect(shopIdFromUserData({ shopId: "SHOP_G_001" })).toBe("SHOP_G_001");
     expect(shopIdFromUserData({ shopId: 42 })).toBeNull();
     expect(shopIdFromUserData(undefined)).toBeNull();
+  });
+});
+
+describe("shopIdFromObject", () => {
+  it("prefers userData.shopId for shop parts whose names do not match the pattern", () => {
+    expect(shopIdFromObject({ name: "SHOP_G_001_GLASS", userData: { shopId: "SHOP_G_001" } })).toBe("SHOP_G_001");
+    expect(shopIdFromObject({ name: "SHOP_F1_004_DOOR", userData: { shopId: "SHOP_F1_004" } })).toBe("SHOP_F1_004");
+    expect(shopIdFromObject({ name: "SHOP_F2_009_SIGN", userData: { shopId: "SHOP_F2_009" } })).toBe("SHOP_F2_009");
+  });
+
+  it("falls back to the node name when userData is absent", () => {
+    expect(shopIdFromObject({ name: "SHOP_G_001", userData: {} })).toBe("SHOP_G_001");
+    expect(shopIdFromObject({ name: "shop_f1_007" })).toBe("SHOP_F1_007");
+  });
+
+  it("returns null for non-shop objects (never throws)", () => {
+    for (const source of [
+      { name: "MALL_G_STRUCT" },
+      { name: "COMMON_ESC_G_A", userData: { shopId: "COMMON_ESC_G_A" } },
+      { name: "SHOP_G_001_GLASS", userData: {} }, // part name without userData does not parse
+      { name: "" },
+      {}
+    ]) {
+      expect(shopIdFromObject(source)).toBeNull();
+    }
   });
 });
 

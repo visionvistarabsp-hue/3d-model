@@ -10,6 +10,7 @@
 import { create } from "zustand";
 import type { Shop, Floor, ViewMode } from "@/types";
 import { isViewMode } from "@/lib/validation/schemas";
+import type { ShopCategory, ShopStatus } from "@/lib/filter/shops";
 
 export interface MallState {
   // data
@@ -22,6 +23,11 @@ export interface MallState {
   selectedShopId: string | null;
   hoveredShopId: string | null;
 
+  // navigation
+  activeFloorId: string | null; // null = all floors visible
+  activeCategoryId: ShopCategory | null;
+  activeStatusId: ShopStatus | null;
+
   // visualization
   viewMode: ViewMode;
 
@@ -32,6 +38,9 @@ export interface MallState {
   selectShop: (id: string | null) => void;
   hoverShop: (id: string | null) => void;
   setViewMode: (mode: ViewMode) => void;
+  setActiveFloor: (id: string | null) => void;
+  setActiveCategory: (id: ShopCategory | null) => void;
+  setActiveStatus: (id: ShopStatus | null) => void;
 }
 
 export const useMallStore = create<MallState>((set) => ({
@@ -41,6 +50,9 @@ export const useMallStore = create<MallState>((set) => ({
   loadError: null,
   selectedShopId: null,
   hoveredShopId: null,
+  activeFloorId: null,
+  activeCategoryId: null,
+  activeStatusId: null,
   viewMode: "realistic",
 
   setFloors: (floors) => set({ floors }),
@@ -48,10 +60,16 @@ export const useMallStore = create<MallState>((set) => ({
   setLoading: (loaded, error = null) => set({ loaded, loadError: error }),
   selectShop: (id) => set({ selectedShopId: id }),
   hoverShop: (id) => set({ hoveredShopId: id }),
-  setViewMode: (mode) => set(() => ({ viewMode: isViewMode(mode) ? mode : "realistic" }))
+  setViewMode: (mode) => set(() => ({ viewMode: isViewMode(mode) ? mode : "realistic" })),
+  setActiveFloor: (id) => set({ activeFloorId: id }),
+  setActiveCategory: (id) => set({ activeCategoryId: id }),
+  setActiveStatus: (id) => set({ activeStatusId: id })
 }));
 
 /** Selector helpers to avoid re-rendering whole scene on irrelevant changes. */
 export const selectSelectedShopId = (s: MallState) => s.selectedShopId;
 export const selectHoveredShopId = (s: MallState) => s.hoveredShopId;
 export const selectViewMode = (s: MallState) => s.viewMode;
+export const selectActiveFloorId = (s: MallState) => s.activeFloorId;
+export const selectActiveCategoryId = (s: MallState) => s.activeCategoryId;
+export const selectActiveStatusId = (s: MallState) => s.activeStatusId;

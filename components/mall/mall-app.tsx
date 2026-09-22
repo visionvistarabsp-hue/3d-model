@@ -5,6 +5,9 @@ import type { Floor, Shop } from "@/types";
 import { useMallStore } from "@/store/use-mall-store";
 import { MallViewer } from "@/components/viewer/mall-viewer";
 import { StatusBar } from "@/components/ui/status-bar";
+import { FloorSelector } from "@/components/ui/floor-selector";
+import { ShopSearchFilters } from "@/components/ui/shop-search-filters";
+import { ShopInfoPanel } from "@/components/ui/shop-info-panel";
 
 /**
  * Client mount point for the 3D explorer. Receives data already resolved by
@@ -39,6 +42,9 @@ export function MallApp({
     <div className="relative h-full w-full">
       <StatusBar title={title} />
       <MallViewer />
+      <FloorSelector floors={floors} />
+      <ShopSearchFilters floors={floors} />
+      <ShopInfoPanel />
     </div>
   );
 }

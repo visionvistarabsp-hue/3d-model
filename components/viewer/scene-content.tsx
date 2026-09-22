@@ -14,7 +14,24 @@
 import { useEffect, useState } from "react";
 import { loadModelManifest } from "@/lib/model/model-loader";
 import type { LoadableModel } from "@/lib/model/model-loader";
-import { MallModel } from "./mall-model";
+import { MallModel, useMallScene } from "./mall-model";
+import { ViewModeEffects } from "@/components/effects/view-mode-effects";
+import { PostProcessing } from "@/components/effects/postprocessing";
+import { TenantBrandingLayer } from "@/components/tenant/tenant-branding-layer";
+import { useMallStore } from "@/store/use-mall-store";
+
+function SceneContentInner() {
+  const { scene } = useMallScene();
+  const selectedShopId = useMallStore((s) => s.selectedShopId);
+
+  return (
+    <>
+      <ViewModeEffects scene={scene} selectedShopId={selectedShopId} />
+      <PostProcessing />
+      <TenantBrandingLayer scene={scene} />
+    </>
+  );
+}
 
 export function SceneContent() {
   const [model, setModel] = useState<LoadableModel | null>(null);
@@ -30,5 +47,5 @@ export function SceneContent() {
   }, []);
 
   if (!model) return null;
-  return <MallModel manifest={model} />;
+  return <MallModel manifest={model}><SceneContentInner /></MallModel>;
 }

@@ -5,6 +5,7 @@
  */
 import type { ShopRepository } from "@/lib/data/shop-repository";
 import { createMockRepository } from "@/lib/data/shop-repository";
+import { ApiShopRepository } from "@/lib/data/api-shop-repository";
 
 let cached: ShopRepository | null = null;
 
@@ -15,10 +16,7 @@ export async function getRepository(): Promise<ShopRepository> {
       cached ??= await createMockRepository();
       return cached;
     case "api":
-      // THROWS clearly until an ApiShopRepository is implemented (PHASE 6).
-      throw new Error(
-        "NEXT_PUBLIC_DATA_SOURCE=api is not implemented yet. Use 'mock'."
-      );
+      return new ApiShopRepository();
     default:
       throw new Error(`Unknown data source: ${source}`);
   }

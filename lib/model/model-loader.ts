@@ -23,10 +23,23 @@ export interface LoadableModel {
 export async function loadModelManifest(
   source: "demo" | "authoritative" = detectModelSource()
 ): Promise<LoadableModel> {
-  const raw =
-    source === "demo"
-      ? (await import("@/data/demo/model")).DEMO_MODEL_MANIFEST
-      : (await import("@/data/demo/model")).DEMO_MODEL_MANIFEST;
+  let raw: ModelMetadata;
+
+  if (source === "demo") {
+    raw = (await import("@/data/demo/model")).DEMO_MODEL_MANIFEST;
+  } else {
+    // Authoritative: try to load from API, fallback to bundled manifest
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || "/api"}/model/latest`);
+      if (res.ok) {
+        raw = await res.json();
+      } else {
+        raw = (await import("@/data/authoritative/model")).AUTHORITATIVE_MODEL_MANIFEST;
+      }
+    } catch {
+      raw = (await import("@/data/authoritative/model")).AUTHORITATIVE_MODEL_MANIFEST;
+    }
+  }
 
   const metadata = parseModelMetadata(raw);
   const url = storage.resolve(metadata.glbKey);
