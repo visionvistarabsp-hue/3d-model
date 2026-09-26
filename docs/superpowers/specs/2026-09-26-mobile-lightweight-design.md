@@ -113,3 +113,10 @@ Risk register:
 - `env(safe-area*)` unsupported on old browsers → CSS fallback `0px` default via custom props.
 - `navigator.vibrate` privacy/unsupported on iOS → guarded optional call, no UI dependence.
 - Shadow-off low tier changes visuals → acceptable; low tier already takes the dpr=1 sharpness cut.
+
+## Self-review notes (2026-09-26)
+
+- Section 2 wiring detail for the plan: drei's `<OrbitControls>` did `makeDefault` + internal `domElement` + update-loop wiring. With `three-stdlib` we must keep the identical props/camera, attach `controls` to `gl.domElement`, and drive damping via `useFrame(() => controls.update())`. Camera eye/up/target unchanged.
+- Low-tier detection: `navigator.deviceMemory` is Chromium-only. On mobile Safari, low tier is determined by coarse pointer + viewport width via the existing lib/performance/quality util — unchanged behavior, but the plan must not rely on deviceMemory for iOS.
+- Mobile default floor = coarse-pointer devices at init only; if the user has already chosen a floor, the store must keep it (default is only a first-load default, not an override on resize).
+- Material-clone cache key includes `meshUuid` + `viewMode`; revert path must also handle dispose of orphaned clones on unmount in a single pass.
