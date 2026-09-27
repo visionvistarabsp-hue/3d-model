@@ -17,7 +17,8 @@ import type { LoadableModel } from "@/lib/model/model-loader";
 import { MallModel, useMallScene } from "./mall-model";
 import { ViewModeEffects } from "@/components/effects/view-mode-effects";
 import { PostProcessing } from "@/components/effects/postprocessing";
-import { TenantBrandingLayer } from "@/components/tenant/tenant-branding-layer";
+import { MallPalette } from "@/components/effects/mall-palette";
+import { runtimeQuality } from "@/lib/performance/quality";
 import { useMallStore } from "@/store/use-mall-store";
 
 function SceneContentInner() {
@@ -26,9 +27,9 @@ function SceneContentInner() {
 
   return (
     <>
+      <MallPalette scene={scene} />
       <ViewModeEffects scene={scene} selectedShopId={selectedShopId} />
-      <PostProcessing />
-      <TenantBrandingLayer scene={scene} />
+      {runtimeQuality === "high" && <PostProcessing />}
     </>
   );
 }

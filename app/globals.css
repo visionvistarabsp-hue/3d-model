@@ -11,7 +11,10 @@ body {
 
 body {
   margin: 0;
-  background: #0b0d12;
+  background:
+    radial-gradient(1200px 800px at 78% -8%, rgba(99, 102, 241, 0.14), transparent 60%),
+    radial-gradient(1000px 700px at 8% 112%, rgba(34, 211, 238, 0.09), transparent 55%),
+    #0a0c11;
   color: #e8edf5;
   font-family:
     ui-sans-serif,
@@ -29,15 +32,105 @@ body {
   height: 100%;
 }
 
+/* ---- demo banner (slim) ---- */
 .demo-banner {
-  background:
-    linear-gradient(90deg, rgba(250, 204, 21, 0.16), rgba(250, 204, 21, 0.04)),
-    rgba(20, 20, 28, 0.82);
-  border-bottom: 1px solid rgba(250, 204, 21, 0.35);
+  background: linear-gradient(90deg, rgba(250, 204, 21, 0.14), rgba(250, 204, 21, 0.03));
+  border-bottom: 1px solid rgba(250, 204, 21, 0.28);
+  color: rgba(253, 230, 138, 0.95);
+}
+
+/* ---- premium glass surface ---- */
+.luxe-panel {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 18px 50px -12px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ---- accent gradient fill for active segments ---- */
+.seg-active {
+  color: #0b0d12;
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  box-shadow:
+    0 6px 22px -6px rgba(99, 102, 241, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.text-premium-gradient {
+  background: linear-gradient(90deg, #a5b4fc, #67e8f9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- layout animations ---- */
+@keyframes sheet-up {
+  from {
+    transform: translateY(28px);
+    opacity: 0.3;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.sheet-in {
+  animation: sheet-up 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes fade-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.fade-up {
+  animation: fade-up 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes mod-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.mod-fade {
+  animation: mod-fade 0.2s ease-out both;
+}
+
+/* ---- loader shimmer ---- */
+@keyframes shimmer-x {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(260%);
+  }
+}
+.shimmer-bar {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: shimmer-x 1.1s ease-in-out infinite;
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #1a1d26 25%, #242836 50%, #1a1d26 75%);
+  background: linear-gradient(90deg, #171a24 25%, #20242f 50%, #171a24 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.6s infinite linear;
 }
@@ -51,6 +144,26 @@ body {
   }
 }
 
+/* ---- slim scrollbars for panels ---- */
+.luxe-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.luxe-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.luxe-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes hull-rotate {
   from {
     transform: rotateX(60deg) rotateZ(0deg);
@@ -59,7 +172,16 @@ body {
     transform: rotateX(60deg) rotateZ(360deg);
   }
 }
-
 .hull-spinner {
   animation: hull-rotate 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

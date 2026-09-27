@@ -31,6 +31,9 @@ export interface MallState {
   // visualization
   viewMode: ViewMode;
 
+  // mobile bottom-sheet (search & filters)
+  searchSheetOpen: boolean;
+
   // actions
   setFloors: (floors: Floor[]) => void;
   setShops: (shops: Shop[]) => void;
@@ -41,6 +44,7 @@ export interface MallState {
   setActiveFloor: (id: string | null) => void;
   setActiveCategory: (id: ShopCategory | null) => void;
   setActiveStatus: (id: ShopStatus | null) => void;
+  setSearchSheetOpen: (open: boolean) => void;
 }
 
 export const useMallStore = create<MallState>((set) => ({
@@ -54,16 +58,18 @@ export const useMallStore = create<MallState>((set) => ({
   activeCategoryId: null,
   activeStatusId: null,
   viewMode: "realistic",
+  searchSheetOpen: false,
 
   setFloors: (floors) => set({ floors }),
   setShops: (shops) => set({ shops }),
   setLoading: (loaded, error = null) => set({ loaded, loadError: error }),
-  selectShop: (id) => set({ selectedShopId: id }),
+  selectShop: (id) => set({ selectedShopId: id, searchSheetOpen: false }),
   hoverShop: (id) => set({ hoveredShopId: id }),
   setViewMode: (mode) => set(() => ({ viewMode: isViewMode(mode) ? mode : "realistic" })),
   setActiveFloor: (id) => set({ activeFloorId: id }),
   setActiveCategory: (id) => set({ activeCategoryId: id }),
-  setActiveStatus: (id) => set({ activeStatusId: id })
+  setActiveStatus: (id) => set({ activeStatusId: id }),
+  setSearchSheetOpen: (open) => set({ searchSheetOpen: open })
 }));
 
 /** Selector helpers to avoid re-rendering whole scene on irrelevant changes. */

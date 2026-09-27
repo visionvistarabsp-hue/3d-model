@@ -40,10 +40,20 @@ function PageShell({
   error: string | null;
 }) {
   return (
-    <div className="flex h-full items-center justify-center bg-[#0b0d12]">
+    <div className="flex h-full items-center justify-center bg-[#0a0c11]">
       <div className="text-center">
         {loading ? (
-          <div className="skeleton mx-auto h-3 w-40 rounded" />
+          <div className="space-y-5">
+            <div
+              className="mx-auto h-10 w-10 rounded-xl"
+              style={{
+                background: "linear-gradient(135deg, #6366f1, #22d3ee)",
+                boxShadow: "0 10px 40px -8px rgba(99, 102, 241, 0.7)"
+              }}
+            />
+            <p className="text-sm font-medium text-white/70">Preparing the experience…</p>
+            <div className="shimmer-bar mx-auto h-1 w-44 overflow-hidden rounded-full bg-white/10" />
+          </div>
         ) : (
           <p className="text-sm text-red-400">{error ?? "Unable to load mall data"}</p>
         )}

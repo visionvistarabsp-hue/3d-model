@@ -11,17 +11,27 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { SceneContent } from "./scene-content";
 import { LoadingScreen } from "./loading-screen";
 import { ModelErrorBoundary } from "./model-error-boundary";
+import { selectActiveFloorId, useMallStore } from "@/store/use-mall-store";
+import { runtimeQuality } from "@/lib/performance/quality";
+
+// Runtime capability: high devices keep the cinematic pipeline (dpr up to 1.5,
+// crisp 2048 shadow maps, post-processing). Weak / mobile drops to the light
+// profile: dpr 1, 1024 shadow maps and no composer (see scene-content).
+const shadowMapSize = runtimeQuality === "low" ? 1024 : 2048;
+
+// Dev helper — opt-in via NEXT_PUBLIC_SHOW_AXES="1" so shipped builds stay clean.
+const showAxes = process.env.NEXT_PUBLIC_SHOW_AXES === "1";
 
 export function MallViewer() {
   return (
     <div className="absolute inset-0">
       <Canvas
-        dpr={[1, 1.5]}
+        dpr={runtimeQuality === "low" ? [1, 1] : [1, 1.5]}
         gl={{ antialias: true, powerPreference: "high-performance" }}
         shadows
       >
-        <color attach="background" args={["#0b0d12"]} />
-        <fog attach="fog" args={["#0b0d12", 60, 160]} />
+        <color attach="background" args={["#0a0c11"]} />
+        <fog attach="fog" args={["#0a0c11", 60, 160]} />
 
         <ambientLight intensity={0.45} />
         <hemisphereLight args={["#cfe8ff", "#2a2f3a", 0.5]} />
@@ -29,19 +39,11 @@ export function MallViewer() {
           position={[40, 60, 30]}
           intensity={1.4}
           castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
+          shadow-mapSize-width={shadowMapSize}
+          shadow-mapSize-height={shadowMapSize}
         />
 
-        <PerspectiveCamera makeDefault position={[38, 34, 42]} fov={45} />
-        <OrbitControls
-          makeDefault
-          target={[0, 4, 0]}
-          minDistance={8}
-          maxDistance={140}
-          maxPolarAngle={Math.PI / 2.05}
-          enableDamping
-        />
+        <AdaptiveCamera />
 
         <Suspense fallback={<LoadingScreen />}>
           <ModelErrorBoundary>
@@ -49,9 +51,34 @@ export function MallViewer() {
           </ModelErrorBoundary>
         </Suspense>
 
-        <axesHelper args={[4]} />
+        {showAxes && <axesHelper args={[4]} />}
       </Canvas>
     </div>
+  );
+}
+
+const FLOOR_CAMERA: [number, number, number] = [18, 15, 20];
+const FLOOR_TARGET: [number, number, number] = [0, 1.2, 0];
+
+function AdaptiveCamera() {
+  const activeFloorId = useMallStore(selectActiveFloorId);
+  const allFloors = activeFloorId === null;
+  return (
+    <>
+      <PerspectiveCamera
+        makeDefault
+        position={allFloors ? DEFAULT_CAMERA : FLOOR_CAMERA}
+        fov={45}
+      />
+      <OrbitControls
+        makeDefault
+        target={allFloors ? [0, 4, 0] : FLOOR_TARGET}
+        minDistance={8}
+        maxDistance={140}
+        maxPolarAngle={Math.PI / 2.05}
+        enableDamping
+      />
+    </>
   );
 }
 

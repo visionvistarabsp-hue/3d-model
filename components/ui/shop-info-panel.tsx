@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useMallStore } from "@/store/use-mall-store";
 import { getRepository } from "@/lib/data/get-repository";
 import { STATUS_COLORS, CATEGORY_COLORS } from "@/lib/theme/shop-colors";
+import { ACCENT_GRADIENT, titleCase } from "@/lib/theme/premium";
+import { IconClose } from "@/components/ui/icons";
 import type { Shop, ShopStatus, ShopCategory } from "@/types";
 
 export function ShopInfoPanel() {
@@ -42,132 +44,208 @@ export function ShopInfoPanel() {
     };
   }, [selectedShopId]);
 
+  const deselect = () => useMallStore.getState().selectShop(null);
+
+  let content: React.ReactNode;
   if (!selectedShopId) {
-    return (
-      <div className="pointer-events-auto absolute right-4 bottom-4 z-20 w-80 rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur">
-        <p className="text-white/50 text-sm text-center py-8">
-          Click a shop to view details
-        </p>
+    content = (
+      <div className="px-4 py-10 text-center text-sm text-white/50">
+        Select a shop in the 3D view to see its details.
       </div>
     );
-  }
-
-  if (loading) {
-    return (
-      <div className="pointer-events-auto absolute right-4 bottom-4 z-20 w-80 rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur">
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-6 w-6 border-2 border-white/30 border-t-white" />
-          <span className="ml-3 text-sm text-white/70">Loading shop details...</span>
-        </div>
+  } else if (loading) {
+    content = (
+      <div className="flex items-center justify-center gap-3 px-4 py-10 text-sm text-white/70">
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/25 border-t-indigo-400" />
+        Loading shop details…
       </div>
     );
-  }
-
-  if (error || !shop) {
-    return (
-      <div className="pointer-events-auto absolute right-4 bottom-4 z-20 w-80 rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur">
-        <p className="text-red-400 text-sm text-center py-4">
-          {error ?? "Shop not found"}
-        </p>
+  } else if (error || !shop) {
+    content = (
+      <div className="px-4 py-6 text-center">
+        <p className="text-sm text-red-400">{error ?? "Shop not found"}</p>
         <button
-          onClick={() => useMallStore.getState().selectShop(null)}
-          className="mt-3 w-full rounded-md px-3 py-2 text-sm font-medium text-white/70 hover:text-white transition-colors"
+          onClick={deselect}
+          className="mt-3 cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
         >
           Close
         </button>
       </div>
     );
+  } else {
+    content = <ShopDetails shop={shop} onClose={deselect} />;
   }
 
-  const statusColor = STATUS_COLORS[shop.status as ShopStatus] ?? "#666";
-  const categoryColor = CATEGORY_COLORS[shop.category as ShopCategory] ?? "#666";
+  return (
+    <>
+      {/* Desktop — floating card */}
+      <div className="luxe-panel hidden w-[22rem] flex-col overflow-hidden rounded-2xl sm:flex sm:absolute sm:right-4 sm:bottom-5 sm:z-20 sm:max-h-[72vh]">
+        <div className="luxe-scroll overflow-y-auto">{content}</div>
+      </div>
+
+      {/* Mobile — bottom sheet (when a shop is selected) */}
+      {selectedShopId && (
+        <div className="fixed inset-0 z-30 sm:hidden">
+          <button
+            type="button"
+            aria-label="Close shop details"
+            onClick={deselect}
+            className="mod-fade absolute inset-0 cursor-pointer bg-black/50"
+          />
+          <div className="luxe-panel sheet-in absolute inset-x-0 bottom-0 max-h-[72vh] rounded-t-3xl border-b-0">
+            <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-white/25" />
+            <div className="luxe-scroll max-h-[64vh] overflow-y-auto px-5 pb-7 pt-2">
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  aria-label="Close shop details"
+                  onClick={deselect}
+                  className="cursor-pointer rounded-full p-1.5 text-white/55 hover:bg-white/10 hover:text-white"
+                >
+                  <IconClose className="h-4 w-4" />
+                </button>
+              </div>
+              {content}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function ShopDetails({ shop, onClose }: { shop: Shop; onClose: () => void }) {
+  const statusColor = STATUS_COLORS[shop.status as ShopStatus] ?? "#888";
+  const categoryColor = CATEGORY_COLORS[shop.category as ShopCategory] ?? "#888";
 
   return (
-    <div className="pointer-events-auto absolute right-4 bottom-4 z-20 w-80 max-h-[60vh] overflow-auto rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-white truncate">{shop.name}</h3>
-          <p className="text-xs text-white/50">Unit: {shop.shopNumber}</p>
+    <div className="p-4">
+      <div
+        className="pointer-events-none -mx-2 -mt-2 mb-3 h-16 rounded-t-2xl"
+        style={{
+          background: `linear-gradient(135deg, ${categoryColor}30, transparent 65%)`
+        }}
+      />
+
+      <div className="-mt-12 flex items-start justify-between gap-3 px-1">
+        <div className="flex min-w-0 items-center gap-3">
+          <span
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-semibold"
+            style={{
+              backgroundColor: `${categoryColor}22`,
+              color: categoryColor,
+              border: `1px solid ${categoryColor}55`,
+              boxShadow: `0 6px 18px -6px ${categoryColor}66`
+            }}
+          >
+            {shop.name.charAt(0).toUpperCase()}
+          </span>
+          <div className="min-w-0">
+            <h3 className="truncate text-lg font-semibold text-white">{shop.name}</h3>
+            <p className="truncate text-xs text-white/50">
+              Unit {shop.shopNumber} · Floor {shop.floorId}
+            </p>
+          </div>
         </div>
         <button
-          onClick={() => useMallStore.getState().selectShop(null)}
-          className="text-white/50 hover:text-white transition-colors"
+          type="button"
+          onClick={onClose}
           aria-label="Close shop details"
+          className="cursor-pointer rounded-full p-1.5 text-white/55 transition-colors hover:bg-white/10 hover:text-white"
         >
-          ✕
+          <IconClose className="h-4 w-4" />
         </button>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         <span
-          className="px-2 py-0.5 text-xs font-medium rounded bg-white/10"
-          style={{ backgroundColor: `${statusColor}33`, color: statusColor, border: `1px solid ${statusColor}66` }}
+          className="rounded-full px-2.5 py-0.5 text-[11px] font-medium"
+          style={{
+            backgroundColor: `${statusColor}26`,
+            color: statusColor,
+            border: `1px solid ${statusColor}55`
+          }}
         >
-          {shop.status.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+          {titleCase(shop.status)}
         </span>
         <span
-          className="px-2 py-0.5 text-xs font-medium rounded bg-white/10"
-          style={{ backgroundColor: `${categoryColor}33`, color: categoryColor, border: `1px solid ${categoryColor}66` }}
+          className="rounded-full px-2.5 py-0.5 text-[11px] font-medium"
+          style={{
+            backgroundColor: `${categoryColor}26`,
+            color: categoryColor,
+            border: `1px solid ${categoryColor}55`
+          }}
         >
-          {shop.category.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+          {titleCase(shop.category)}
         </span>
-        <span className="px-2 py-0.5 text-xs text-white/60 bg-white/5 rounded border border-white/10">
+        <span className="rounded-full border border-white/15 bg-white/5 px-2.5 py-0.5 text-[11px] text-white/60">
           Floor: {shop.floorId}
         </span>
       </div>
 
-      <dl className="mt-4 space-y-2 text-sm">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-          <dt className="text-white/50">Area</dt>
-          <dd className="text-white font-mono">{shop.areaSqM.toLocaleString()} m²</dd>
-          <dt className="text-white/50">Frontage</dt>
-          <dd className="text-white font-mono">{shop.frontageM} m</dd>
-          <dt className="text-white/50">Depth</dt>
-          <dd className="text-white font-mono">{shop.depthM} m</dd>
-          <dt className="text-white/50">Floor</dt>
-          <dd className="text-white">{shop.floorId}</dd>
-        </div>
+      <dl className="mt-4 grid grid-cols-3 divide-x divide-white/10 rounded-xl border border-white/10 bg-black/20 text-center">
+        <Stat label="Area" value={`${shop.areaSqM.toLocaleString()} m²`} />
+        <Stat label="Frontage" value={`${shop.frontageM} m`} />
+        <Stat label="Depth" value={`${shop.depthM} m`} />
       </dl>
 
       {shop.price && (
-        <div className="mt-3 pt-3 border-t border-white/10">
-          <dt className="text-xs text-white/50 uppercase tracking-wide">Price</dt>
-          <dd className="mt-1 text-white font-mono">
-            {shop.price.sale !== undefined && (
-              <div>
-                Sale: {shop.price.currency} {shop.price.sale.toLocaleString()}
-              </div>
-            )}
-            {shop.price.leaseRateSqm !== undefined && (
-              <div>
-                Lease: {shop.price.currency} {shop.price.leaseRateSqm.toLocaleString()}/m²/mo
-              </div>
-            )}
-          </dd>
+        <div className="mt-3 space-y-1 rounded-xl border border-white/10 bg-black/20 p-3">
+          <dt className="text-[10px] font-medium uppercase tracking-wider text-white/45">
+            Pricing
+          </dt>
+          {shop.price.sale !== undefined && (
+            <dd className="font-mono text-sm text-white">
+              Sale · {shop.price.currency} {shop.price.sale.toLocaleString()}
+            </dd>
+          )}
+          {shop.price.leaseRateSqm !== undefined && (
+            <dd className="font-mono text-sm text-white">
+              Lease · {shop.price.currency} {shop.price.leaseRateSqm.toLocaleString()}/m²/mo
+            </dd>
+          )}
         </div>
       )}
 
       {shop.description && (
-        <div className="mt-3 pt-3 border-t border-white/10">
-          <dt className="text-xs text-white/50 uppercase tracking-wide">Description</dt>
-          <dd className="mt-1 text-sm text-white/80 whitespace-pre-wrap">{shop.description}</dd>
+        <div className="mt-3">
+          <dt className="text-[10px] font-medium uppercase tracking-wider text-white/45">
+            Description
+          </dt>
+          <dd className="mt-1 whitespace-pre-wrap text-sm text-white/80">{shop.description}</dd>
         </div>
       )}
 
       {shop.isDemo && shop.demoNotice && (
-        <div className="mt-3 pt-3 border-t border-yellow-500/30">
-          <p className="text-xs text-yellow-300/90">⚠ {shop.demoNotice}</p>
+        <div className="mt-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2">
+          <p className="text-xs text-amber-200/90">⚠ {shop.demoNotice}</p>
         </div>
       )}
 
       <div className="mt-4 flex gap-2">
-        <button className="flex-1 rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors">
-          View Brochure
-        </button>
-        <button className="flex-1 rounded-md border border-white/20 px-3 py-2 text-sm font-medium text-white hover:border-white/40 transition-colors">
+        <button
+          type="button"
+          className="flex-1 cursor-pointer rounded-xl px-3 py-2.5 text-sm font-semibold text-[#0b0d12] transition-transform active:scale-[0.98]"
+          style={{ background: ACCENT_GRADIENT, boxShadow: "0 8px 24px -8px rgba(99, 102, 241, 0.8)" }}
+        >
           Enquire
         </button>
+        <button
+          type="button"
+          className="flex-1 cursor-pointer rounded-xl border border-white/20 bg-white/5 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:border-white/40 hover:bg-white/10"
+        >
+          View Brochure
+        </button>
       </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="px-2 py-3">
+      <dd className="truncate font-mono text-sm font-medium text-white">{value}</dd>
+      <dt className="mt-0.5 text-[10px] uppercase tracking-wider text-white/45">{label}</dt>
     </div>
   );
 }

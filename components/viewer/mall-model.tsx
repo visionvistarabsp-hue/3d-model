@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 import type { LoadableModel } from "@/lib/model/model-loader";
@@ -18,16 +18,9 @@ interface MallSceneContextValue {
 
 const MallSceneContext = createContext<MallSceneContextValue>({ scene: null });
 
-export function MallSceneProvider({ children, manifest }: { children: React.ReactNode; manifest: LoadableModel }) {
-  const { scene } = useGLTF(manifest.url);
-  const sceneRef = useRef<THREE.Group | null>(scene);
-
-  useEffect(() => {
-    sceneRef.current = scene;
-  }, [scene]);
-
+export function MallSceneProvider({ children, scene }: { children: React.ReactNode; scene: THREE.Group | null }) {
   return (
-    <MallSceneContext.Provider value={{ scene: sceneRef.current }}>
+    <MallSceneContext.Provider value={{ scene }}>
       {children}
     </MallSceneContext.Provider>
   );
@@ -43,23 +36,16 @@ export function MallModel({ manifest, children }: { manifest: LoadableModel; chi
   const hoverShop = useMallStore((s) => s.hoverShop);
   const selectShop = useMallStore((s) => s.selectShop);
 
-  const { scene } = useGLTF(manifest.url);
+  const url = useMemo(() => {
+    const floorUrl = activeFloorId ? manifest.floorUrls.get(activeFloorId) : undefined;
+    return floorUrl ?? manifest.url;
+  }, [activeFloorId, manifest]);
+
+  const { scene } = useGLTF(url);
 
   useEffect(() => {
     verifyShopObjectNames(scene, manifest.metadata.objectNaming);
   }, [scene, manifest]);
-
-  useEffect(() => {
-    scene.traverse((obj) => {
-      if (obj instanceof THREE.Mesh) {
-        const shopId = shopIdFromObject(obj);
-        const floor = shopId ? parseShopObjectName(shopId)?.floorId ?? null : null;
-        const shouldHide =
-          activeFloorId !== null && floor !== null && floor !== activeFloorId;
-        obj.visible = !shouldHide;
-      }
-    });
-  }, [scene, activeFloorId]);
 
   const onPointerOver = (e: ThreeEvent<PointerEvent>) => {
     const target = shopIntersection(e);
@@ -88,7 +74,7 @@ export function MallModel({ manifest, children }: { manifest: LoadableModel; chi
   };
 
   return (
-    <MallSceneProvider manifest={manifest}>
+    <MallSceneProvider scene={scene}>
       <group
         onPointerOver={onPointerOver}
         onPointerOut={onPointerOut}

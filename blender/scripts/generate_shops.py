@@ -41,14 +41,25 @@ def floor_label(idx):
     return FLOORS[idx]
 
 
-def build_floor(idx):
+def build_floor(idx, z_base=None, col_floor=None):
+    """Build the 9 shops of a floor.
+
+    Default behaviour (whole-building export): creates the MALL/SHOPS/<FLOOR>
+    collection tree and places the floor at its absolute slab top.
+
+    Plate mode: pass `z_base` (slab-top normalised to 0) and `col_floor` so
+    the shops build directly into an existing plate collection at z=0.
+    Shop ids / statuses / categories are unchanged in either mode.
+    """
     global MATS
     MATS = L.ensure_materials()
-    col_mall = L.get_collection("MALL")
-    col_shops = L.get_collection("SHOPS", parent=col_mall)
-    col_floor = L.get_collection(FLOORS[idx], parent=col_shops)
+    if col_floor is None:
+        col_mall = L.get_collection("MALL")
+        col_shops = L.get_collection("SHOPS", parent=col_mall)
+        col_floor = L.get_collection(FLOORS[idx], parent=col_shops)
 
-    z_base = SLAB_TOP[idx]
+    if z_base is None:
+        z_base = SLAB_TOP[idx]
     clear_h = L.cfg()["floor_height"] - SLAB_T  # 3.9 usable interior height
     wall_zc = z_base + clear_h / 2.0
 
