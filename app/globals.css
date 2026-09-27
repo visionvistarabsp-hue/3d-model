@@ -26,6 +26,18 @@ body {
     Arial,
     sans-serif;
   overflow: hidden; /* the 3D canvas owns the viewport; panels float above */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ---- Safe area insets for mobile notches / dynamic islands ---- */
+@supports (padding: max(0px)) {
+  body {
+    --safe-top: env(safe-area-inset-top);
+    --safe-right: env(safe-area-inset-right);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --safe-left: env(safe-area-inset-left);
+  }
 }
 
 #__next {
@@ -162,6 +174,40 @@ body {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* ---- mobile safe-area helpers ---- */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-left {
+  padding-left: env(safe-area-inset-left);
+}
+.safe-right {
+  padding-right: env(safe-area-inset-right);
+}
+.safe-x {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+.safe-y {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.safe-all {
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+}
+.margin-safe-bottom {
+  margin-bottom: env(safe-area-inset-bottom);
+}
+.margin-safe-top {
+  margin-top: env(safe-area-inset-top);
 }
 
 @keyframes hull-rotate {

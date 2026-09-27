@@ -92,15 +92,15 @@ export function ShopInfoPanel() {
             onClick={deselect}
             className="mod-fade absolute inset-0 cursor-pointer bg-black/50"
           />
-          <div className="luxe-panel sheet-in absolute inset-x-0 bottom-0 max-h-[72vh] rounded-t-3xl border-b-0">
+          <div className="luxe-panel sheet-in absolute inset-x-0 bottom-0 max-h-[80vh] rounded-t-3xl border-b-0" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
             <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-white/25" />
-            <div className="luxe-scroll max-h-[64vh] overflow-y-auto px-5 pb-7 pt-2">
+            <div className="luxe-scroll max-h-[72vh] overflow-y-auto px-safe-x pb-6 pt-2">
               <div className="flex justify-end">
                 <button
                   type="button"
                   aria-label="Close shop details"
                   onClick={deselect}
-                  className="cursor-pointer rounded-full p-1.5 text-white/55 hover:bg-white/10 hover:text-white"
+                  className="cursor-pointer rounded-full p-2 text-white/55 hover:bg-white/10 hover:text-white"
                 >
                   <IconClose className="h-4 w-4" />
                 </button>
@@ -212,7 +212,7 @@ function ShopDetails({ shop, onClose }: { shop: Shop; onClose: () => void }) {
           <dt className="text-[10px] font-medium uppercase tracking-wider text-white/45">
             Description
           </dt>
-          <dd className="mt-1 whitespace-pre-wrap text-sm text-white/80">{shop.description}</dd>
+          <dd className="mt-1 max-h-40 space-y-1 overflow-y-auto text-xs text-white/80 sm:text-sm whitespace-pre-wrap">{shop.description}</dd>
         </div>
       )}
 
@@ -222,17 +222,17 @@ function ShopDetails({ shop, onClose }: { shop: Shop; onClose: () => void }) {
         </div>
       )}
 
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
         <button
           type="button"
-          className="flex-1 cursor-pointer rounded-xl px-3 py-2.5 text-sm font-semibold text-[#0b0d12] transition-transform active:scale-[0.98]"
+          className="w-full cursor-pointer rounded-xl px-3 py-2.5 text-sm font-semibold text-[#0b0d12] transition-transform active:scale-[0.98] sm:flex-1"
           style={{ background: ACCENT_GRADIENT, boxShadow: "0 8px 24px -8px rgba(99, 102, 241, 0.8)" }}
         >
           Enquire
         </button>
         <button
           type="button"
-          className="flex-1 cursor-pointer rounded-xl border border-white/20 bg-white/5 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:border-white/40 hover:bg-white/10"
+          className="w-full cursor-pointer rounded-xl border border-white/20 bg-white/5 px-3 py-2.5 text-sm font-medium text-white transition-colors hover:border-white/40 hover:bg-white/10 sm:flex-1"
         >
           View Brochure
         </button>
@@ -243,9 +243,9 @@ function ShopDetails({ shop, onClose }: { shop: Shop; onClose: () => void }) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="px-2 py-3">
-      <dd className="truncate font-mono text-sm font-medium text-white">{value}</dd>
-      <dt className="mt-0.5 text-[10px] uppercase tracking-wider text-white/45">{label}</dt>
+    <div className="px-1 py-2 sm:px-2 sm:py-3">
+      <dd className="truncate font-mono text-xs font-medium text-white sm:text-sm">{value}</dd>
+      <dt className="mt-0.5 text-[8px] uppercase tracking-wider text-white/45 sm:text-[10px]">{label}</dt>
     </div>
   );
 }

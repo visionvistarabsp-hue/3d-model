@@ -69,13 +69,13 @@ export function FloorSelector({ floors }: FloorSelectorProps) {
       </div>
 
       {/* Mobile — snap-able pill row under the header */}
-      <div className="absolute inset-x-0 top-24 z-20 flex justify-center px-3 sm:hidden">
+      <div className="absolute inset-x-0 z-20 flex justify-center px-3 sm:pointer-events-auto sm:hidden" style={{ top: "max(6rem, calc(2.5rem + env(safe-area-inset-top)))" }}>
         <div
-          className="luxe-panel no-scrollbar flex max-w-full gap-1.5 overflow-x-auto rounded-full p-1.5"
+          className="luxe-panel no-scrollbar flex scroll-px-4 snap-x gap-1.5 overflow-x-auto rounded-full p-1.5"
           role="tablist"
           aria-label="Floor selection"
         >
-          {floorButtons("px-3.5 py-1.5")}
+          {floorButtons("px-3.5 py-1.5 snap-start")}
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import * as THREE from "three";
 import { SceneContent } from "./scene-content";
 import { LoadingScreen } from "./loading-screen";
 import { ModelErrorBoundary } from "./model-error-boundary";
@@ -24,7 +25,7 @@ const showAxes = process.env.NEXT_PUBLIC_SHOW_AXES === "1";
 
 export function MallViewer() {
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" style={{ touchAction: "none" }}>
       <Canvas
         dpr={runtimeQuality === "low" ? [1, 1] : [1, 1.5]}
         gl={{ antialias: true, powerPreference: "high-performance" }}
@@ -77,6 +78,14 @@ function AdaptiveCamera() {
         maxDistance={140}
         maxPolarAngle={Math.PI / 2.05}
         enableDamping
+        enablePan={runtimeQuality === "high"}
+        enableZoom={true}
+        enableRotate={true}
+        screenSpacePanning={false}
+        touches={{
+          ONE: THREE.TOUCH.ROTATE,
+          TWO: THREE.TOUCH.DOLLY_ROTATE
+        }}
       />
     </>
   );

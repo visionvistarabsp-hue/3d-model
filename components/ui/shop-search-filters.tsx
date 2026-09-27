@@ -76,11 +76,12 @@ export function ShopSearchFilters({ floors }: ShopSearchFiltersProps) {
         </div>
       </div>
 
-      {/* Mobile — floating trigger pill */}
+       {/* Mobile — floating trigger pill */}
       <button
         type="button"
         onClick={() => setSearchSheetOpen(true)}
         className="luxe-panel pointer-events-auto absolute bottom-6 left-4 z-20 flex cursor-pointer items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-white/90 transition-transform active:scale-95 sm:hidden"
+        style={{ left: "max(1rem, env(safe-area-inset-left))" }}
       >
         <IconSearch className="h-4 w-4" />
         Search &amp; Filters
@@ -100,16 +101,16 @@ export function ShopSearchFilters({ floors }: ShopSearchFiltersProps) {
             onClick={() => setSearchSheetOpen(false)}
             className="mod-fade absolute inset-0 cursor-pointer bg-black/50"
           />
-          <div className="luxe-panel sheet-in absolute inset-x-0 bottom-0 max-h-[72vh] rounded-t-3xl border-b-0">
+          <div className="luxe-panel sheet-in absolute inset-x-0 bottom-0 max-h-[80vh] rounded-t-3xl border-b-0" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
             <div className="mx-auto mt-2.5 h-1 w-10 rounded-full bg-white/25" />
-            <div className="luxe-scroll max-h-[64vh] overflow-y-auto px-5 pb-7 pt-3" role="search">
+            <div className="luxe-scroll max-h-[72vh] overflow-y-auto px-safe-x pb-7 pt-3" role="search">
               <div className="flex items-center justify-between">
                 <PanelHeader hasActive={hasActive} activeCount={activeCount} onClear={clearAllFilters} />
                 <button
                   type="button"
                   aria-label="Close search panel"
                   onClick={() => setSearchSheetOpen(false)}
-                  className="cursor-pointer rounded-full p-1.5 text-white/55 hover:bg-white/10 hover:text-white"
+                  className="cursor-pointer rounded-full p-2 text-white/55 hover:bg-white/10 hover:text-white"
                 >
                   <IconClose className="h-4 w-4" />
                 </button>
@@ -144,16 +145,16 @@ function PanelHeader({
   return (
     <div className="flex items-center justify-between gap-2">
       <h2 className="text-sm font-semibold text-white/90">Search &amp; Filters</h2>
-      {hasActive && (
-        <button
-          type="button"
-          onClick={onClear}
-          className="flex cursor-pointer items-center gap-1.5 rounded-full px-2 py-1 text-[11px] font-medium text-indigo-300 transition-colors hover:bg-white/10 hover:text-indigo-200"
-        >
-          <IconReset className="h-3 w-3" />
-          Clear {activeCount ? `(${activeCount})` : ""}
-        </button>
-      )}
+        {hasActive && (
+          <button
+            type="button"
+            onClick={onClear}
+            className="flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[11px] font-medium text-indigo-300 transition-colors hover:bg-white/10 hover:text-indigo-200"
+          >
+            <IconReset className="h-4 w-4" />
+            Clear {activeCount ? `(${activeCount})` : ""}
+          </button>
+        )}
     </div>
   );
 }
@@ -176,37 +177,37 @@ function FilterForm({ floors, query, onQueryChange, onSubmit, hasActive, onClear
   const setActiveFloor = useMallStore((s) => s.setActiveFloor);
 
   const selectClass =
-    "w-full appearance-none rounded-xl border border-white/10 bg-black/30 py-2 pl-3 pr-9 text-sm text-white/90 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/40";
+    "w-full appearance-none rounded-xl border border-white/10 bg-black/30 py-2.5 pl-3 pr-9 text-sm text-white/90 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/40";
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3.5">
-      <div>
-        <label htmlFor="shop-search" className="sr-only">
-          Search shops
-        </label>
-        <div className="relative">
-          <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
-          <input
-            id="shop-search"
-            type="search"
-            placeholder="Search shop name, number..."
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-black/30 py-2 pl-9 pr-9 text-sm text-white placeholder-white/35 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/40"
-            aria-label="Search shops by name or number"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => onQueryChange("")}
-              aria-label="Clear search text"
-              className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full p-1 text-white/45 hover:bg-white/10 hover:text-white"
-            >
-              <IconClose className="h-3.5 w-3.5" />
-            </button>
-          )}
+      <form onSubmit={onSubmit} className="space-y-3.5">
+        <div>
+          <label htmlFor="shop-search" className="sr-only">
+            Search shops
+          </label>
+          <div className="relative">
+            <IconSearch className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
+            <input
+              id="shop-search"
+              type="search"
+              placeholder="Search shop name, number..."
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-black/30 py-2.5 pl-9 pr-12 text-sm text-white placeholder-white/35 focus:border-indigo-400/60 focus:outline-none focus:ring-1 focus:ring-indigo-400/40"
+              aria-label="Search shops by name or number"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => onQueryChange("")}
+                aria-label="Clear search text"
+                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full p-2 text-white/45 hover:bg-white/10 hover:text-white"
+              >
+                <IconClose className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
       <div className="space-y-3">
         <div>
@@ -280,7 +281,7 @@ function FilterForm({ floors, query, onQueryChange, onSubmit, hasActive, onClear
         <button
           type="button"
           onClick={onClear}
-          className="w-full cursor-pointer rounded-xl border border-white/10 bg-white/5 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          className="w-full cursor-pointer rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
         >
           Clear all filters
         </button>

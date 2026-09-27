@@ -23,14 +23,14 @@ export function StatusBar({ title }: { title?: string }) {
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-      <div className="demo-banner flex items-center gap-2 px-4 py-1 text-[10px] font-medium uppercase tracking-[0.14em]">
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />
+      <div className="demo-banner flex items-center gap-2 px-4 py-1.5 text-[9px] font-medium uppercase tracking-[0.14em] sm:text-[10px]" style={{ paddingTop: "max(0.375rem, env(safe-area-inset-top))" }}>
+        <span className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />
         <span className="truncate">
           Prototype build — all shop data and geometry shown here are DEMO DATA, not real commercial facts.
         </span>
       </div>
 
-      <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
+      <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5" style={{ paddingTop: "max(1rem, calc(0.5rem + env(safe-area-inset-top)))", paddingLeft: "max(1rem, env(safe-area-inset-left))", paddingRight: "max(1.25rem, env(safe-area-inset-right))" }}>
         <h1 className="flex min-w-0 items-center gap-2">
           <span
             className="h-2 w-2 shrink-0 rounded-full"
@@ -63,14 +63,13 @@ export function StatusBar({ title }: { title?: string }) {
                 role="tab"
                 aria-selected={active}
                 onClick={() => setViewMode(mode)}
-                className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium transition-all sm:px-3.5 ${
+                className={`flex items-center justify-center rounded-full p-2 text-xs font-medium transition-all sm:px-3.5 sm:py-1.5 sm:text-xs ${
                   active ? "seg-active" : "text-white/55 hover:text-white/90"
                 }`}
                 style={!active ? { color: VIEW_MODE_ACCENT[mode] } : undefined}
               >
-                <Icon className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">{def.label}</span>
-                <span className="sr-only sm:hidden">{def.label}</span>
+                <Icon className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+                <span className="sr-only sm:inline">{def.label}</span>
               </button>
             );
           })}
