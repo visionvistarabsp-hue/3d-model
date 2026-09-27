@@ -18,8 +18,7 @@ blender/**/__pycache__/
 **/__pycache__/
 **/*.pyc
 
-# large / generated 3d artifacts (keep exports small; dev re-exports locally)
-public/assets/models/*.glb
+# large / generated 3d artifacts (dev re-exports locally; committed models used in prod)
 public/assets/textures/
 *.glb.tmp
 
